@@ -1,6 +1,9 @@
-cat dat | perl test.gnuplot | gnuplot > output.png && gthumb output.png
+You can run the example by:
 
-Where dat contains:
+cat example.data | ./gpr | gnuplot > example.png && gthumb example.png
+
+Where dat contains lines of this format
+```
 (key):(val)
+```
 
-Right now, val needs to be [1,5] but it wouldn't be hard to fix that

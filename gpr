@@ -34,18 +34,20 @@ my $angle_fix = $sub90;
 
 for (1..$len) {
 	print "a$_ = $angle_fix+360/npoints*$_\n";
-	print "min_a$_ = 0\n";
-	print "max_a$_ = 5\n";
 	print "set arrow nohead from 0,0 to first 1*cos(a$_) , 1*sin(a$_)\n"
 }
 my $i = 1;
+my $max = -1;
 foreach (sort keys %pts) {
 	my $k = $_;
 	my $v = $pts{$_};
+	if ( $max < $v ) {
+		$max = $v;
+	}
 	print "set label \"$k\" at cos(a$i),sin(a$i)\n";
 	$i++;
 }
-print "plot '-' using ($angle_fix+\$1 * 360 / npoints):(\$2/5) w l lc rgb \"#000000\"\n";
+print "plot '-' using ($angle_fix+\$1 * 360 / npoints):(\$2/$max) w l lc rgb \"#000000\"\n";
 $i = 1;
 my $first;
 foreach (sort keys %pts) {
