@@ -4,6 +4,8 @@ use POSIX;
 my %pts;
 my $output_file = "";
 my $output_format = "png";
+my $set_min = -1;
+my $set_max = -1;
 while (<>) {
 	s/\s+$//;
 	(my $key, my $val) = split /:/;
@@ -14,6 +16,12 @@ while (<>) {
 	}
 	elsif ($key eq "%format") {
 		$output_format = $val;
+	}
+	elsif ($key eq "%min") {
+		$set_min = $val;
+	}
+	elsif ($key eq "%max") {
+		$set_max = $val;
 	}
 	else {
 		$pts{$key} = $val;
@@ -62,6 +70,28 @@ foreach (sort keys %pts) {
 	print "set label \"$k\" at cos(a$i),sin(a$i)\n";
 	$i++;
 }
+
+if ( $set_max != -1 ) {
+	$max = $set_max;
+	foreach (sort keys %pts) {
+		my $k = $_;
+		my $v = $pts{$_};
+		if ( $v > $max ) {
+			$pts{$_} = $max;
+		}
+	}
+}
+
+if ( $set_min != -1 ) {
+	foreach (sort keys %pts) {
+		my $k = $_;
+		my $v = $pts{$_};
+		if ( $v < $set_min ) {
+			$pts{$_} = $set_min;
+		}
+	}
+}
+
 print "plot '-' using ($angle_fix+\$1 * 360 / npoints):(\$2/$max) w l lc rgb \"#000000\"\n";
 $i = 1;
 my $first;
