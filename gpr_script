@@ -1,3 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-cat $1 | ./gpr | gnuplot > $2
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cat $1 | $DIR/gpr | gnuplot > $2
