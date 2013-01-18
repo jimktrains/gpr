@@ -23,6 +23,8 @@ while (<>) {
 	elsif ($key eq "%max") {
 		$set_max = $val;
 	}
+	elsif ($key eq "") {
+	}
 	else {
 		$pts{$key} = $val;
 	}
