@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+use strict;
+my %pts;
+while (<>) {
+	s/\s+$//;
+	(my $key, my $val) = split /:/;
+	$pts{$key} = $val;
+}
+
+my $len = scalar keys %pts;
+
+print "set term png\n";
+print "set nokey\n";
+print "set polar\n";
+print "set angles degrees\n";
+print "set grid polar 360.\n";
+print "set size square\n";
+print "set style data lines\n";
+print "unset border\n";
+print "set xrange [-1:1]\n";
+print "set yrange [-1:1]\n";
+print "unset xtics\n";
+print "unset ytics\n";
+print "set rrange [0:1]\n";
+
+print "npoints = $len\n";
+
+use POSIX;
+
+my $angle = 360 / $len;
+my $mod90 = floor($angle / 90);
+my $sub90 = 90 - ($mod90*$angle);
+my $angle_fix = $sub90;
+
+for (1..$len) {
+	print "a$_ = $angle_fix+360/npoints*$_\n";
+	print "min_a$_ = 0\n";
+	print "max_a$_ = 5\n";
+	print "set arrow nohead from 0,0 to first 1*cos(a$_) , 1*sin(a$_)\n"
+}
+my $i = 1;
+foreach (sort keys %pts) {
+	my $k = $_;
+	my $v = $pts{$_};
+	print "set label \"$k\" at cos(a$i),sin(a$i)\n";
+	$i++;
+}
+print "plot '-' using ($angle_fix+\$1 * 360 / npoints):(\$2/5) w l lc rgb \"#000000\"\n";
+$i = 1;
+my $first;
+foreach (sort keys %pts) {
+	my $k = $_;
+	my $v = $pts{$_};
+	if ($i == 1) { $first = $v; }
+	print "$i $v\n";
+	$i++;
+}
+print "1 $first\n";
+print "\n";
